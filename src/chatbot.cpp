@@ -42,11 +42,69 @@ ChatBot::~ChatBot()
     }
 }
 
-//// STUDENT CODE
-////
+ChatBot::ChatBot(const ChatBot &source)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
 
-////
-//// EOF STUDENT CODE
+    _chatLogic = source._chatLogic; // can't do deep copy because ChatLogic contains vector of unique_ptr
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode; // can't do deep copy because GraphNode contains vector of unique_ptr
+    _currentNode = source._currentNode; // can't do deep copy because GraphNode contains vector of unique_ptr
+    _image = new wxBitmap(*(source._image));
+}
+
+ChatBot & ChatBot::operator=(const ChatBot &source)
+{
+    std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+
+    if (this == &source)
+        return *this;
+
+    _chatLogic = source._chatLogic; // can't do deep copy because ChatLogic contains vector of unique_ptr
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode; // can't do deep copy because GraphNode contains vector of unique_ptr
+    _currentNode = source._currentNode; // can't do deep copy because GraphNode contains vector of unique_ptr
+    _image = new wxBitmap(*(source._image));
+
+    return *this;
+}
+
+ChatBot::ChatBot(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+
+    _chatLogic = source._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+    _image = source._image;
+
+    source._chatLogic = nullptr;
+    source._rootNode = nullptr;
+    source._currentNode = nullptr;
+    source._image = nullptr;
+}
+
+ChatBot & ChatBot::operator=(ChatBot &&source)
+{
+    std::cout << "ChatBot Move Assignment Operator" << std::endl;
+
+    if (this == &source)
+        return *this;
+
+    _chatLogic = source._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode;
+    _currentNode = source._currentNode;
+    _image = source._image;
+
+    source._chatLogic = nullptr;
+    source._rootNode = nullptr;
+    source._currentNode = nullptr;
+    source._image = nullptr;
+
+    return *this;
+}
 
 void ChatBot::ReceiveMessageFromUser(std::string message)
 {
